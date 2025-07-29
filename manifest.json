@@ -1,0 +1,15 @@
+{
+  "name": "Dot Shooter",
+  "short_name": "Shooter",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/747/747376.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
