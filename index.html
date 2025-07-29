@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Dot Shooter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- PWA: Manifest & Theme Color -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,5 +21,13 @@
   <audio id="shoot-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_8c4f674fa6.mp3?filename=laser-small-81720.mp3" preload="auto"></audio>
 
   <script src="game.js"></script>
+
+  <!-- Service Worker for PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('Service Worker registered'));
+    }
+  </script>
 </body>
 </html>
