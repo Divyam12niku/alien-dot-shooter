@@ -1,0 +1,6 @@
+{
+  "appId": "com.example.dotshooter",
+  "appName": "dotshooter",
+  "webDir": ".",
+  "bundledWebRuntime": false
+}
