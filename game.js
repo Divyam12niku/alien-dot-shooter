@@ -60,8 +60,10 @@ function drawAliens() {
 function shoot() {
   if (gameOver) return;
   bullets.push({ x: ship.x + ship.width / 2 - 2, y: ship.y });
-  shootSound.currentTime = 0;
-  shootSound.play();
+  if (shootSound) {
+    shootSound.currentTime = 0;
+    shootSound.play();
+  }
 }
 
 function spawnAliens() {
@@ -83,10 +85,10 @@ function handleCollisions() {
   bullets.forEach(b => {
     aliens.forEach(a => {
       if (a.alive &&
-        b.x < a.x + a.width &&
-        b.x + 4 > a.x &&
-        b.y < a.y + a.height &&
-        b.y + 10 > a.y) {
+          b.x < a.x + a.width &&
+          b.x + 4 > a.x &&
+          b.y < a.y + a.height &&
+          b.y + 10 > a.y) {
         a.alive = false;
         b.hit = true;
         score += 10;
@@ -102,7 +104,7 @@ function checkLevelComplete() {
   const allDead = aliens.every(a => !a.alive);
   if (allDead) {
     level = Math.min(level + 1, 10);
-    alienSpeed *= 1.1; // 10% harder
+    alienSpeed *= 1.1;
     spawnAliens();
   }
 }
@@ -130,14 +132,27 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
+// Keyboard controls
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') ship.x = Math.max(0, ship.x - 10);
   if (e.key === 'ArrowRight') ship.x = Math.min(canvas.width - ship.width, ship.x + 10);
   if (e.key === ' ') shoot();
 });
 
+// Tap to restart
 canvas.addEventListener('click', () => {
   if (gameOver) resetGame();
+});
+
+// Mobile touch buttons
+document.getElementById('left-btn')?.addEventListener('touchstart', () => {
+  ship.x = Math.max(0, ship.x - 15);
+});
+document.getElementById('right-btn')?.addEventListener('touchstart', () => {
+  ship.x = Math.min(canvas.width - ship.width, ship.x + 15);
+});
+document.getElementById('shoot-btn')?.addEventListener('touchstart', () => {
+  shoot();
 });
 
 updateScoreDisplay();
