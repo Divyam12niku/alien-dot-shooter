@@ -1,32 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Dot Shooter</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- PWA: Manifest & Theme Color -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#000000">
+  <meta charset="UTF-8" />
+  <title>Alien Dot Shooter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="stylesheet" href="style.css">
+  <!-- PWA Support -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#000000" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    #game-ui {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 10px;
+    }
+
+    #score-display {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    #device-info {
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 10px;
+    }
+
+    canvas {
+      background: black;
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      display: block;
+    }
+
+    #mobile-controls {
+      position: fixed;
+      bottom: 15px;
+      left: 0;
+      right: 0;
+      display: none;
+      justify-content: center;
+      gap: 20px;
+      z-index: 1000;
+    }
+
+    #mobile-controls button {
+      padding: 15px 20px;
+      font-size: 22px;
+      border: none;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 0 8px #000;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <div id="game-ui">
     <div id="score-display">Score: 0</div>
+    <div id="device-info"></div>
     <canvas id="game-canvas" width="400" height="600"></canvas>
+  </div>
+
+  <!-- On-Screen Mobile Controls -->
+  <div id="mobile-controls">
+    <button id="left-btn">◀️</button>
+    <button id="shoot-btn">🔫</button>
+    <button id="right-btn">▶️</button>
   </div>
 
   <!-- Sound -->
   <audio id="shoot-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_8c4f674fa6.mp3?filename=laser-small-81720.mp3" preload="auto"></audio>
 
+  <!-- Game Logic -->
   <script src="game.js"></script>
 
-  <!-- Service Worker for PWA -->
+  <!-- Device Detection & UI Setup -->
+  <script>
+    const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+    const deviceInfo = document.getElementById('device-info');
+    const mobileControls = document.getElementById('mobile-controls');
+
+    if (isMobile) {
+      deviceInfo.innerText = "📱 Mobile detected – Tap the buttons to move and shoot!";
+      mobileControls.style.display = 'flex';
+
+      // Setup mobile controls to trigger events
+      document.getElementById('left-btn').addEventListener('touchstart', () => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }));
+      });
+
+      document.getElementById('right-btn').addEventListener('touchstart', () => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+      });
+
+      document.getElementById('shoot-btn').addEventListener('touchstart', () => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
+      });
+    } else {
+      deviceInfo.innerText = "🕹️ Desktop detected – Use Arrow keys + Spacebar!";
+    }
+  </script>
+
+  <!-- PWA Service Worker -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('Service Worker registered'));
+        .then(() => console.log('✅ Service Worker registered'))
+        .catch(err => console.error('❌ SW registration failed:', err));
     }
   </script>
 </body>
